@@ -154,7 +154,10 @@
   }
   // скрытые позиции: варианты одного предмета, показываем один (Cloud — самый дорогой; Павел 27.10)
   // pending — карточки, по которым ещё не найдено качественное фото (Павел 28.10: показываем только готовые)
-  const HIDE = new Set(Object.entries(CARDS).filter(([, c]) => c.hide || c.pending).map(([k]) => k));
+  // ?pending=1 — наоборот, только неготовые (отдельный просмотр для решения по каждой)
+  const ONLY_PENDING = qs.get('pending') === '1';
+  const HIDE = new Set(Object.entries(CARDS).filter(([, c]) => ONLY_PENDING ? (c.hide || !c.pending) : (c.hide || c.pending)).map(([k]) => k));
+  if (ONLY_PENDING) P.forEach(p => { if (!CARDS[p.id]) HIDE.add(p.id) });
   function draw() {
     const list = P.filter(p => !HIDE.has(p.id) &&(!S.groups.size || S.groups.has(p.group)) && (!S.locs.size || S.locs.has(p.loc)) &&
       (!S.brands.size || S.brands.has(p.brand)) && (!S.disc || p.discount) &&
