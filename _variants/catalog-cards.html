@@ -96,7 +96,7 @@
 <div id="ftr"></div>
 <script src="../data/data.js?v=1793025044"></script>
 <script src="../data/stock.js?v=1793025044"></script>
-<script src="../data/cards.js?v=1793191337"></script>
+<script src="../data/cards.js?v=1793204914"></script>
 <script src="../assets/site.js?v=1793025044"></script>
 <script>
 (function () {
@@ -145,7 +145,7 @@
     const alt = altSrc ? `<img class="alt" loading="lazy" src="${altSrc}" alt="">` : '';
     const tags = (p.discount ? `<span class="tag">${esc(p.discount)}</span>` : '') + (p.loc !== 'Москва' ? `<span class="tag tag--soft">${esc(p.loc)}</span>` : '');
     // артикул фабрики после « · » — мелкой строкой, чтобы название читалось
-    const [title, ...rest] = p.name.split(' · '), code = rest.join(' · ');
+    const [title, ...rest] = ((CARDS[p.id] || {}).title || p.name).split(' · '), code = rest.join(' · ');
     const href = `expo-card.html?id=${encodeURIComponent(p.id)}`;   // все плитки ведут на новые карточки EXPO
     return `<a class="tile ${altSrc ? 'tile--new' : ''}" href="${href}">
       <div class="tile__p">${alt}${img}<div class="tags">${tags}</div></div>
