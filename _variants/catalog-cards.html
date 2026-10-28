@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Наличие — плитка товара · тест · HOMEART</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap">
+<link rel="stylesheet" href="../assets/fonts.css?v=1793025044">
+<link rel="stylesheet" href="../assets/site.css?v=1793025044">
+<style>
+/* Служебная страница: тестовая плитка товара в каталоге «Наличие» (в паре с _variants/product-chapters.html).
+   Рабочий catalog.html не меняется. На боевой сайт не выкладывается. */
+:root{--out:cubic-bezier(.23,1,.32,1)}
+.vbar{background:var(--ink);color:#f3eee6;font-size:13px}
+.vbar__in{max-width:var(--maxw);margin:0 auto;padding:12px var(--gutter);color:#bdb6aa;font-size:12.5px;line-height:1.5}
+.vbar__in b{color:#fff;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:11px;margin-right:12px}
+.vbar__in a{color:#fff;border-bottom:1px solid rgba(255,255,255,.4)}
+
+/* ── плитка: максимум фото, минимум текста ── */
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,2vw,30px) clamp(14px,1.6vw,22px)}
+.tile{display:flex;flex-direction:column;color:inherit}
+.tile__p{position:relative;aspect-ratio:4/5;background:var(--white);overflow:hidden}
+.tile__p img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .6s var(--out),transform 1.2s var(--out)}
+/* предмет на белом: поля фото обрезаются скриптом, предмет вписывается с одинаковым отступом — ~80% ширины или высоты плитки */
+.tile__p .cut{object-fit:contain;padding:10%}
+.tile__p .alt{opacity:0;object-fit:contain;background:#F4F2EE}   /* при наведении — фото целиком, без обрезки */
+.tile__p .fit{object-fit:contain;background:#F4F2EE}              /* свет: интерьерный кадр целиком, предмет не обрезается */
+.tile:hover .tile__p img{transform:scale(1.035)}
+.tile:hover .tile__p .alt{opacity:1}
+.tile:hover .tile__p:has(.alt) .main{opacity:0}
+.tags{position:absolute;left:12px;top:12px;display:flex;gap:6px;flex-wrap:wrap;z-index:2}
+.tag{font-size:10.5px;font-weight:500;letter-spacing:.04em;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.94);color:var(--ink);border:1px solid var(--ink)}
+.tag--soft{border-color:transparent}
+.tile__b{padding-top:14px;display:flex;flex-direction:column;gap:5px}
+.tile__k{font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--graphite-2)}
+.tile__t{font-family:var(--display);font-weight:500;font-size:15px;line-height:1.3;text-transform:uppercase;letter-spacing:0}
+.tile__c{font-size:11.5px;color:var(--graphite-2);overflow-wrap:anywhere}
+.tile:hover .tile__t{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.tile__f{display:flex;align-items:baseline;gap:10px;margin-top:4px;font-size:15px}
+.tile__f s{font-size:13px;color:var(--graphite-2)}
+.tile__f small{margin-left:auto;font-size:12.5px;color:var(--graphite-2)}
+.tile--new .tile__p::after{content:"Новая карточка";position:absolute;right:12px;top:12px;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 8px;border-radius:999px;background:var(--ink);color:#fff}
+@media(max-width:1180px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 12px}.tile__t{font-size:13px}.tile__f{font-size:14px}.tags{left:8px;top:8px}.tile--new .tile__p::after{display:none}}
+@media(prefers-reduced-motion:reduce){.tile__p img{transition:none}.tile:hover .tile__p img{transform:none}}
+</style>
+</head>
+<body data-page="catalog" data-root="../">
+<div class="vbar"><div class="vbar__in"><b>Тест · плитка товара</b>Каталог «Наличие» с новой плиткой. Три позиции с пометкой «Новая карточка» ведут в тестовую карточку; у них при наведении фото меняется на интерьер (фото фабрики, для теста). Остальные ведут в текущую карточку.
+  <a href="product-chapters.html">Открыть тестовую карточку</a></div></div>
+<div id="hdr"></div>
+<main class="wrap">
+  <div class="crumbs"><a href="../index.html">Главная</a><span>/</span><span>Наличие</span></div>
+  <div class="pagehead">
+    <div class="eyebrow">Наличие</div>
+    <h1>Мебель и свет в наличии</h1>
+    <p class="lead">Позиции из экспозиции шоурума и со склада в Москве и Санкт-Петербурге — без ожидания поставки с фабрики. Цены — как в каталоге наличия HOMEART.</p>
+  </div>
+  <div class="tabs"><a href="../catalog.html" class="on">Наличие<span id="tabCnt"></span></a><a href="../factories.html">Фабрики<span>348</span></a>
+    <a href="../kitchen.html">Kitchen Division</a><a href="../factories.html?tab=decor">Аксессуары и декор</a></div>
+
+  <div class="cat">
+    <aside class="filters" id="filters" aria-label="Фильтры">
+      <div style="display:flex;justify-content:space-between;align-items:center" class="fbtn-close">
+        <b style="font-weight:500">Фильтры</b>
+        <button type="button" class="btn btn--sm btn--line fbtn" onclick="document.getElementById('filters').classList.remove('on')">Показать</button>
+      </div>
+      <div class="fg"><h4>Цена</h4>
+        <label><input type="checkbox" id="fDisc"> Со скидкой<span id="nDisc"></span></label></div>
+      <div class="fg"><h4>Раздел</h4><div id="fGroup"></div></div>
+      <div class="fg"><h4>Где посмотреть</h4><div id="fLoc"></div></div>
+      <div class="fg"><h4>Цена, €</h4>
+        <div class="range"><input id="pMin" inputmode="numeric" placeholder="от"><input id="pMax" inputmode="numeric" placeholder="до"></div></div>
+      <div class="fg"><h4>Бренд</h4><div id="fBrand"></div></div>
+      <button type="button" class="link" id="reset" style="align-self:flex-start">Сбросить фильтры</button>
+    </aside>
+
+    <section>
+      <div class="bar">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button type="button" class="btn btn--sm btn--line fbtn" onclick="document.getElementById('filters').classList.add('on')">Фильтры</button>
+          <span class="cnt" id="cnt"></span>
+        </div>
+        <select id="sort" aria-label="Сортировка" style="border:.5px solid var(--line);border-radius:999px;padding:8px 14px;background:var(--white);font-size:13px">
+          <option value="def">По разделам</option><option value="asc">Сначала дешевле</option><option value="desc">Сначала дороже</option><option value="disc">Сначала со скидкой</option>
+        </select>
+      </div>
+      <div class="tiles" id="grid"></div>
+      <div class="empty" id="empty" hidden>По этим фильтрам ничего нет. <button type="button" class="link" onclick="document.getElementById('reset').click()">Сбросить</button></div>
+    </section>
+  </div>
+</main>
+<div id="ftr"></div>
+<script src="../data/data.js?v=1793025044"></script>
+<script src="../data/stock.js?v=1793025044"></script>
+<script src="../data/cards.js?v=1793189550"></script>
+<script src="../assets/site.js?v=1793025044"></script>
+<script>
+(function () {
+  const { fmt, esc, qs } = HA;
+  const P = STOCK;
+  const GROUPS = ['Мягкая мебель', 'Столы и стулья', 'Хранение', 'Спальня', 'Декор', 'Свет'];
+  // три позиции с новой карточкой: своё главное фото и интерьер при наведении (фото фабрик, только для теста)
+  const NEW = {
+    'm-p045': { main: 'pdp-test/paula/cut.jpg', cut: true, alt: 'pdp-test/paula/2023_PH_Col_Set_Paula_Armchair_Indoor_Web_07.jpg' },   // фото на белом — shop.mohd.it, для теста
+    'm-p003': { main: '../img/stock/m-p003.jpg', cut: true, alt: 'pdp-test/cleo/x_12.jpg' },
+    'm-p019': { main: 'pdp-test/loic/CAPITAL-Loic-tondo-v1.jpg', cut: true, alt: 'pdp-test/loic/LOIC-round-table-ambient-1.jpg' },
+  };
+  const S = { groups: new Set(), locs: new Set(), brands: new Set(), disc: false, min: null, max: null };
+  if (qs.get('cat')) S.groups.add(qs.get('cat'));
+  if (qs.get('brand')) S.brands.add(qs.get('brand'));
+
+  const uniq = arr => [...new Set(arr)];
+  const box = (id, key, vals, set) => {
+    document.getElementById(id).innerHTML = vals.map(v =>
+      `<label><input type="checkbox" value="${esc(v)}" ${set.has(v) ? 'checked' : ''}> ${esc(v)}<span>${P.filter(p => p[key] === v).length}</span></label>`).join('');
+    document.getElementById(id).addEventListener('change', e => { e.target.checked ? set.add(e.target.value) : set.delete(e.target.value); draw() });
+  };
+  box('fGroup', 'group', GROUPS.filter(g => P.some(p => p.group === g)), S.groups);
+  box('fLoc', 'loc', uniq(P.map(p => p.loc)).sort(), S.locs);
+  box('fBrand', 'brand', uniq(P.map(p => p.brand)).sort(), S.brands);
+  document.getElementById('nDisc').textContent = P.filter(p => p.discount).length;
+  document.getElementById('fDisc').onchange = e => { S.disc = e.target.checked; draw() };
+  const num = v => { const n = parseInt(String(v).replace(/\D/g, ''), 10); return isNaN(n) ? null : n };
+  document.getElementById('pMin').oninput = e => { S.min = num(e.target.value); draw() };
+  document.getElementById('pMax').oninput = e => { S.max = num(e.target.value); draw() };
+  document.getElementById('sort').onchange = draw;
+  document.getElementById('reset').onclick = () => {
+    S.groups.clear(); S.locs.clear(); S.brands.clear(); S.disc = false; S.min = S.max = null;
+    document.querySelectorAll('#filters input').forEach(i => { i.type === 'checkbox' ? i.checked = false : i.value = '' }); draw();
+  };
+
+  const CARDS = window.CARDS || {};
+  function tile(p) {
+    // единый вид: предмет на белом. Наш снимок, если он на белом; иначе — фото фабрики на белом; иначе (нет ни того, ни другого) — наш снимок как есть
+    const c = CARDS[p.id] || {};
+    const n = NEW[p.id] || (c.tile ? { main: '../' + c.tile, cut: c.tileCut } : null);   // tile — готовая картинка для плитки (make_tiles.py)
+    const main = n ? n.main : (p.imgs[0] ? '../' + p.imgs[0] : '');
+    const cut = n ? n.cut : p.pack;
+    const altSrc = n && n.alt ? n.alt : (c.ints && c.ints[0] ? '../' + c.ints[0] : '');   // при наведении — интерьер
+    const img = main ? `<img class="main ${cut ? 'cut' : (p.group === 'Свет' ? 'fit' : '')}" loading="lazy" src="${main}" alt="${esc(p.brand)} ${esc(p.name)}">` : '';
+    const alt = altSrc ? `<img class="alt" loading="lazy" src="${altSrc}" alt="">` : '';
+    const tags = (p.discount ? `<span class="tag">${esc(p.discount)}</span>` : '') + (p.loc !== 'Москва' ? `<span class="tag tag--soft">${esc(p.loc)}</span>` : '');
+    // артикул фабрики после « · » — мелкой строкой, чтобы название читалось
+    const [title, ...rest] = p.name.split(' · '), code = rest.join(' · ');
+    const href = `expo-card.html?id=${encodeURIComponent(p.id)}`;   // все плитки ведут на новые карточки EXPO
+    return `<a class="tile ${altSrc ? 'tile--new' : ''}" href="${href}">
+      <div class="tile__p">${alt}${img}<div class="tags">${tags}</div></div>
+      <div class="tile__b"><span class="tile__k">${esc(p.brand)}</span><span class="tile__t">${esc(title)}</span>${code ? `<span class="tile__c">${esc(code)}</span>` : ''}
+        <div class="tile__f"><span class="num">${fmt.eur(p.price)}</span>${p.base ? `<s class="num">${fmt.eur(p.base)}</s>` : ''}${p.qty > 1 ? `<small>${p.qty} ${p.unit === 'компл.' ? 'компл.' : 'шт.'}</small>` : ''}</div></div></a>`;
+  }
+  // скрытые позиции: варианты одного предмета, показываем один (Cloud — самый дорогой; Павел 27.10)
+  // pending — карточки, по которым ещё не найдено качественное фото (Павел 28.10: показываем только готовые)
+  const HIDE = new Set(Object.entries(CARDS).filter(([, c]) => c.hide || c.pending).map(([k]) => k));
+  function draw() {
+    const list = P.filter(p => !HIDE.has(p.id) &&(!S.groups.size || S.groups.has(p.group)) && (!S.locs.size || S.locs.has(p.loc)) &&
+      (!S.brands.size || S.brands.has(p.brand)) && (!S.disc || p.discount) &&
+      (S.min == null || p.price >= S.min) && (S.max == null || p.price <= S.max));
+    const s = document.getElementById('sort').value;
+    if (s === 'asc') list.sort((a, b) => a.price - b.price);
+    else if (s === 'desc') list.sort((a, b) => b.price - a.price);
+    else if (s === 'disc') list.sort((a, b) => (!!b.discount - !!a.discount) || a.price - b.price);
+    else list.sort((a, b) => GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group));
+    document.getElementById('grid').innerHTML = list.map(tile).join('');
+    document.getElementById('empty').hidden = list.length > 0;
+    document.getElementById('cnt').textContent = fmt.plural(list.length, 'позиция', 'позиции', 'позиций');
+    document.getElementById('tabCnt').textContent = P.length;
+  }
+  /* обрезка белых полей вокруг предмета: ищем, где кончается белый фон, и оставляем только предмет (+2% воздуха),
+     чтобы все предметы в сетке были одного масштаба, а не «мелкий диван посреди белого поля» */
+  const scan = document.createElement('canvas'), sx = scan.getContext('2d', { willReadFrequently: true });
+  function trim(img) {
+    if (img.dataset.trim || !img.naturalWidth) return;
+    img.dataset.trim = '1';
+    const W = img.naturalWidth, H = img.naturalHeight, k = Math.min(1, 360 / Math.max(W, H));
+    const w = Math.max(1, Math.round(W * k)), h = Math.max(1, Math.round(H * k));
+    scan.width = w; scan.height = h; sx.drawImage(img, 0, 0, w, h);
+    let d; try { d = sx.getImageData(0, 0, w, h).data } catch (e) { return }
+    let x0 = w, y0 = h, x1 = -1, y1 = -1;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      if (Math.min(d[i], d[i + 1], d[i + 2]) < 232) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y }
+    }
+    if (x1 < 0) return;
+    const pad = .02, bx = Math.max(0, (x0 / w - pad) * W), by = Math.max(0, (y0 / h - pad) * H);
+    const bw = Math.min(W - bx, ((x1 - x0 + 1) / w + 2 * pad) * W), bh = Math.min(H - by, ((y1 - y0 + 1) / h + 2 * pad) * H);
+    if (bw > W * .92 && bh > H * .92) return;   // поля и так узкие
+    const out = document.createElement('canvas'); out.width = Math.round(bw); out.height = Math.round(bh);
+    const ox = out.getContext('2d'); ox.fillStyle = '#fff'; ox.fillRect(0, 0, out.width, out.height);
+    ox.drawImage(img, bx, by, bw, bh, 0, 0, out.width, out.height);
+    // почти белый фон фото (у разных фабрик он сероватый) → чисто белый, чтобы не было видно прямоугольника на белой плитке
+    try {
+      const px = ox.getImageData(0, 0, out.width, out.height), a = px.data;
+      // мягко: от 215 до 248 светлые тона плавно уходят в белый — тени сохраняют растушёвку, без резкого края
+      for (let i = 0; i < a.length; i += 4) {
+        const m = Math.min(a[i], a[i + 1], a[i + 2]); if (m <= 215) continue;
+        const t = Math.min(1, (m - 215) / 33), f = t * t * (3 - 2 * t);
+        a[i] += (255 - a[i]) * f; a[i + 1] += (255 - a[i + 1]) * f; a[i + 2] += (255 - a[i + 2]) * f;
+      }
+      ox.putImageData(px, 0, 0);
+    } catch (e) { }
+    img.src = out.toDataURL('image/jpeg', .9);
+  }
+  const grid = document.getElementById('grid');
+  grid.addEventListener('load', e => { if (e.target.matches && e.target.matches('img.cut')) trim(e.target) }, true);
+  const trimAll = () => grid.querySelectorAll('img.cut').forEach(i => { if (i.complete) trim(i) });
+  const draw0 = draw;
+  draw = function () { draw0(); trimAll() };
+  draw();
+})();
+</script>
+</body>
+</html>
