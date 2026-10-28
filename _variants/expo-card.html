@@ -353,7 +353,9 @@
   /* ── главы ── */
   const allImgs = [];
   const ph = (s, cls = '', extra = '', cut = false) => { allImgs.push(src(s)); return `<figure class="pic ${cls} ${cut ? 'pic--cut' : ''}" data-src="${src(s)}"><img loading="lazy" src="${src(s)}" alt="">${extra}</figure>` };
-  const dimsBig = p.dims ? esc(p.dims).replace(/[xх×*]/gi, ' × ') : '';
+  // крупно — только сами размеры (цифры); если в поле размеров ещё и описание (решётка, отделка) — обычным текстом, без наложения
+  const dimsShort = p.dims && p.dims.length <= 32 && !/[а-яё]{4,}/i.test(p.dims);
+  const dimsBig = !p.dims ? '' : dimsShort ? esc(p.dims).replace(/[xх×*]/gi, ' × ') : `<span style="display:block;font-size:clamp(15px,1.2vw,18px);font-weight:300;line-height:1.5;letter-spacing:0">${esc(p.dims)}</span>`;
   const scene = c => {
     // первый кадр — только фото; zoom приближает предмет внутри снимка высокого разрешения (без потери качества)
     if (c.k === 'hero') return `<section class="sc sc--hero" data-nav="${c.nav}">${ph(c.img, '', '', c.cut).replace('loading="lazy"', '')
