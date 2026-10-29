@@ -27,6 +27,8 @@
 .vbar__note a{border-bottom:1px solid rgba(243,238,230,.4)}
 
 .split{display:grid;grid-template-columns:clamp(150px,12.5vw,220px) minmax(0,1.25fr) minmax(0,.8fr);gap:clamp(22px,3vw,60px);margin-top:26px;align-items:start}
+.split--novid{grid-template-columns:minmax(0,1.25fr) minmax(0,.8fr)}
+.split--novid .rib__nav ol{left:12px;transform:none}
 
 /* видео — слева, стоит */
 .vid{position:sticky;top:var(--stick);cursor:pointer;outline-offset:4px}
@@ -200,6 +202,7 @@
   .vid__f{aspect-ratio:16/10}
   .rib{grid-column:1;grid-row:2}
   .info{grid-column:2;grid-row:1/span 2}
+  .split--novid .rib,.split--novid .info{grid-row:1}
   .rib__nav{display:none}
 }
 /* телефон: первая глава, затем описание, затем остальные главы и видео */
@@ -241,7 +244,7 @@
 </dialog>
 <script src="../data/data.js?v=1793025044"></script>
 <script src="../data/stock.js?v=1793025044"></script>
-<script src="../data/cards.js?v=1793272117"></script>
+<script src="../data/cards.js?v=1793272913"></script>
 <script src="../assets/site.js?v=1793025044"></script>
 <script>
 (function () {
@@ -343,8 +346,9 @@
 
   /* ── видео ── */
   const play = '<span class="vid__play"><svg class="ico" viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M8 5v14l11-7z"/></svg></span>';
-  const vid = x.video
-    ? `<aside class="vid" id="vid" role="button" tabindex="0" aria-label="Открыть видео крупно"><div class="vid__h"><i></i>Видео</div>
+  const SHOW_VIDEO = false;   // видео пока не отсняты (29.10) — вернуть: true
+  const vid = !SHOW_VIDEO ? '' : x.video
+    ?`<aside class="vid" id="vid" role="button" tabindex="0" aria-label="Открыть видео крупно"><div class="vid__h"><i></i>Видео</div>
         <div class="vid__f"><video src="${D + x.video}" muted autoplay loop playsinline poster="${D + x.vposter}"></video>${play}</div>
         <p class="vid__c">${esc(p.name)} в движении. Видео фабрики.</p></aside>`
     : `<aside class="vid" id="vid" role="button" tabindex="0" aria-label="Видео появится позже"><div class="vid__h"><i></i>Видео</div>
@@ -434,7 +438,7 @@
 
   document.title = `${(CARDS[p.id] || {}).title || p.name} · ${p.brand} — HOMEART`;
   document.getElementById('main').innerHTML = `<div class="crumbs"><a href="../index.html">Главная</a><span>/</span><a href="../catalog.html">Наличие</a><span>/</span><span>${esc(p.name)}</span></div>
-    <div class="split">${vid}${rib}${info}</div>${more}${invite}`;
+    <div class="split${vid ? '' : ' split--novid'}">${vid}${rib}${info}</div>${more}${invite}`;
 
   const ob = document.getElementById('origBtn');
   if (ob) ob.onclick = () => { const o = document.getElementById('orig'); const on = !o.classList.contains('on'); o.classList.toggle('on', on); ob.setAttribute('aria-expanded', on) };
@@ -502,7 +506,7 @@
   /* ── видео ── */
   const vd = document.getElementById('vid');
   const openVid = () => x.video ? openLb(0, ['video:' + D + x.video]) : toast('Видео из шоурума появится позже.');
-  vd.onclick = openVid; vd.onkeydown = e => { if (e.key === 'Enter') openVid() };
+  if (vd) vd.onclick = openVid, vd.onkeydown = e => { if (e.key === 'Enter') openVid() };
 
   document.getElementById('share').onclick = async () => {
     try {
