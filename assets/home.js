@@ -1,164 +1,51 @@
-/* Главная · сцена «дизайн-проект собирается».
-   Два режима:
-   · ролик (по умолчанию) — видео играет само при открытии, прокрутка страницы на него не влияет;
-   · сборка — клик по шкале этапов: сцена закрепляется, кадр = положение прокрутки (canvas),
-     вниз проект собирается, вверх разбирается. Кнопка ▶ возвращает ролик с текущего места.
-   В обоих режимах прогресс 0…1 управляет подписями и шкалой. */
+/* Главная · первый экран: шоурум собирается от чертежа до настоящего фото.
+   Ролик играет сам при открытии (с плавным ускорением, ~11 с), по его ходу меняются подписи.
+   Кнопка видна только когда ролик не идёт: после конца — «Собрать ещё раз», если браузер не дал запустить — «Смотреть». */
 (function () {
-  const F = window.HERO_FRAMES || { count: 0 };
-  const ACTS = [0, 0.318, 0.53, 0.795];     // начало этапа: проект, кухня, мебель, готово (6, 10, 15 с из 18,9 с ролика)
-  const BOUNDS = [...ACTS, 1];
+  const F = window.HERO_FRAMES || {};
+  const ACTS = [0, 0.301, 0.469, 0.679];    // начало подписей: проект, кухня, мебель, готово (по монтажу ролика, см. _build/hero_speed.py)
   const Q = F.v ? `?v=${F.v}` : '';         // метка версии ролика (img/hero/frames.js) — чтобы не брать старые файлы из кэша
 
   const sec = document.getElementById('hx');
   if (!sec) return;
-  const stage = sec.querySelector('.hx__stage');
-  const view = sec.querySelector('.hx__view');
   const vid = sec.querySelector('.hx__vid');
-  const cv = sec.querySelector('.hx__cv');
   const poster = sec.querySelector('.hx__poster');
-  const ctx = cv.getContext('2d');
-  const playBtn = sec.querySelector('.hxst__play');
-  const hintEl = sec.querySelector('.hxst__hint');
-  const segs = [...sec.querySelectorAll('.seg')];
+  const btn = sec.querySelector('.hxbtn'), btnText = btn.querySelector('span');
   const caps = [...sec.querySelectorAll('.cap__b')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-  const narrow = innerWidth < 860;
+  let act = -1;
 
-  let mode = 'video', prog = 0, act = -1, userPaused = false;
-
-  /* ── подписи и шкала ── */
   function show(p) {
-    prog = p;
-    playBtn.style.setProperty('--p', (p * 100).toFixed(2));   // кольцо вокруг кнопки = ход ролика
-    segs.forEach((s, i) => s.style.setProperty('--f', clamp((p - BOUNDS[i]) / (BOUNDS[i + 1] - BOUNDS[i])).toFixed(4)));
     let a = 0;
     ACTS.forEach((x, i) => { if (p >= x) a = i });
-    if (a !== act) {
-      act = a;
-      caps.forEach((c, i) => c.classList.toggle('on', i === a));
-      segs.forEach((s, i) => { s.classList.toggle('on', i === a); s.setAttribute('aria-current', i === a ? 'step' : 'false') });
-    }
+    if (a !== act) { act = a; caps.forEach((c, i) => c.classList.toggle('on', i === a)) }
   }
-  function setPlayIcon() {
-    const playing = mode === 'video' && !vid.paused && !vid.ended;
-    playBtn.classList.toggle('is-playing', playing);
-    playBtn.classList.toggle('is-ended', mode === 'video' && vid.ended);
-    playBtn.setAttribute('aria-label', playing ? 'Пауза' : mode === 'scrub' ? 'Смотреть роликом' : vid.ended ? 'Смотреть снова' : 'Смотреть');
+  function setBtn(label) {                     // label = null — спрятать
+    btn.classList.toggle('on', !!label);
+    if (label) { btn.hidden = false; btnText.textContent = label }
   }
-  const hint = on => { if (hintEl) hintEl.hidden = !on };   // «листайте» — только в режиме сборки
 
-  /* ── режим «ролик» ── */
   vid.autoplay = true;
-  vid.src = `img/hero/scene-${narrow ? 'm' : 'd'}.mp4${Q}`;
+  vid.src = `img/hero/scene-${innerWidth < 860 ? 'm' : 'd'}.mp4${Q}`;
   let vRaf = 0;
   function vTick() {
     vRaf = 0;
-    if (mode !== 'video' || !vid.duration) return;
+    if (!vid.duration) return;
     show(clamp(vid.currentTime / vid.duration));
     if (!vid.paused && !vid.ended) vRaf = requestAnimationFrame(vTick);
   }
-  vid.addEventListener('playing', () => { sec.classList.add('hx--live'); setPlayIcon(); if (!vRaf) vRaf = requestAnimationFrame(vTick) });
-  vid.addEventListener('pause', setPlayIcon);
-  vid.addEventListener('timeupdate', () => { if (mode === 'video' && vid.duration) show(clamp(vid.currentTime / vid.duration)) });
+  vid.addEventListener('playing', () => { sec.classList.add('hx--live'); setBtn(null); if (!vRaf) vRaf = requestAnimationFrame(vTick) });
+  vid.addEventListener('timeupdate', () => { if (vid.duration) show(clamp(vid.currentTime / vid.duration)) });
   // по окончании держим финальный кадр картинкой — некоторые браузеры после конца видео показывают пустоту
-  vid.addEventListener('ended', () => { poster.src = `img/hero/poster-end.jpg${Q}`; sec.classList.remove('hx--live'); show(1); setPlayIcon(); preload() });
-  // скрытая вкладка откладывает автозапуск — запускаем, когда её открыли (если не ставили на паузу сами)
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && mode === 'video' && vid.paused && !vid.ended && !userPaused && !reduced) vid.play().catch(() => {});
-  });
-  function playVideo(from) {
-    mode = 'video';
-    sec.classList.remove('hx--scrub');
-    removeEventListener('scroll', schedule);
-    if (from != null && vid.duration) vid.currentTime = Math.min(from, .999) * vid.duration;
-    if (from != null && from >= .999) vid.currentTime = 0;
-    hint(false);
+  vid.addEventListener('ended', () => { poster.src = `img/hero/poster-end.jpg${Q}`; sec.classList.remove('hx--live'); show(1); setBtn('Собрать ещё раз') });
+  // скрытая вкладка откладывает автозапуск — запускаем, когда её открыли
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && vid.paused && !vid.ended && !reduced) play() });
+  function play() {
     const pr = vid.play();
-    if (pr && pr.catch) pr.catch(() => setPlayIcon());   // браузер запретил автозапуск — остаётся постер и кнопка ▶
-    setPlayIcon();
+    if (pr && pr.catch) pr.catch(() => setBtn('Смотреть, как собирается'));   // браузер запретил автозапуск — остаётся обложка и кнопка
   }
-
-  /* ── режим «сборка»: кадры в canvas по прокрутке ── */
-  const set = narrow ? 'm' : 'd';
-  const imgs = new Array(F.count), ready = new Uint8Array(F.count);
-  let want = 0, shown = -1, loading = false;
-  function load(i) {
-    if (imgs[i]) return;
-    const im = new Image();
-    im.decoding = 'async';
-    im.onload = () => { ready[i] = 1; if (mode === 'scrub' && i === nearest(want)) draw(want) };
-    im.src = `img/hero/${set}/${String(i).padStart(4, '0')}.webp${Q}`;
-    imgs[i] = im;
-  }
-  function preload() {                         // сначала каждый 16-й кадр, потом всё плотнее
-    if (loading || !F.count) return;
-    loading = true;
-    for (const n of [16, 8, 4, 2, 1]) for (let i = 0; i < F.count; i += n) load(i);
-  }
-  function nearest(i) {
-    for (let d = 0; d < F.count; d++) {
-      if (i - d >= 0 && ready[i - d]) return i - d;
-      if (i + d < F.count && ready[i + d]) return i + d;
-    }
-    return -1;
-  }
-  function draw(i) {
-    const k = nearest(i);
-    if (k < 0 || k === shown) return;
-    const im = imgs[k], cw = cv.width, ch = cv.height;
-    const s = Math.max(cw / im.naturalWidth, ch / im.naturalHeight);
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(im, (cw - im.naturalWidth * s) / 2, (ch - im.naturalHeight * s) / 2, im.naturalWidth * s, im.naturalHeight * s);
-    shown = k;
-    sec.classList.add('hx--cv');                // canvas показан — видео под ним можно прятать
-  }
-  let top = 0, span = 1;
-  function measure() {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    cv.width = Math.round(view.clientWidth * dpr); cv.height = Math.round(view.clientHeight * dpr);
-    const hdr = parseFloat(getComputedStyle(stage).top) || 0;
-    top = sec.getBoundingClientRect().top + scrollY - hdr;
-    span = Math.max(1, sec.offsetHeight - stage.clientHeight);
-    shown = -1;
-  }
-  let raf = 0;
-  const progress = () => clamp((scrollY - top) / span);
-  function tick() { raf = 0; if (mode !== 'scrub') return; const p = progress(); want = Math.round(p * (F.count - 1)); draw(want); show(p) }
-  function schedule() { if (!raf) raf = requestAnimationFrame(tick) }
-
-  function scrubFrom(p) {
-    if (!F.count) return;
-    if (mode === 'video') vid.pause();
-    mode = 'scrub';
-    preload();
-    // пока нужный кадр грузится, на экране остаётся текущий кадр видео
-    sec.classList.add('hx--scrub');
-    measure();
-    want = Math.round(p * (F.count - 1));
-    scrollTo({ top: top + span * p, behavior: 'instant' });
-    draw(want); show(p);
-    addEventListener('scroll', schedule, { passive: true });
-    hint(true);
-    setPlayIcon();
-  }
-
-  /* ── управление ── */
-  segs.forEach((s, i) => s.addEventListener('click', e => {
-    const r = s.getBoundingClientRect();
-    const frac = clamp((e.clientX - r.left) / r.width);
-    const p = e.detail === 0 ? BOUNDS[i] + .001 : BOUNDS[i] + frac * (BOUNDS[i + 1] - BOUNDS[i]);   // с клавиатуры — начало этапа
-    if (mode === 'scrub') scrollTo({ top: top + span * p, behavior: 'smooth' });
-    else scrubFrom(p);
-  }));
-  playBtn.addEventListener('click', () => {
-    if (mode === 'scrub') { sec.classList.remove('hx--cv'); playVideo(prog); scrollTo({ top: Math.max(0, top), behavior: 'instant' }); return }
-    if (vid.ended) playVideo(0);
-    else if (vid.paused) { userPaused = false; playVideo() }
-    else { userPaused = true; vid.pause() }
-  });
-  addEventListener('resize', () => { if (mode === 'scrub') { measure(); schedule() } });
+  btn.addEventListener('click', () => { if (vid.ended) vid.currentTime = 0; setBtn(null); play() });
 
   if (reduced) {                               // «меньше движения»: финальный кадр и текст, без ролика
     sec.classList.add('hx--static');
@@ -167,7 +54,7 @@
     show(1);
   } else {
     show(0);
-    playVideo();
+    play();
   }
 
   /* ── «Нам доверяют»: на прокрутке стопка отпечатков с именами раскладывается в стену, после сборки — заголовок ── */
@@ -276,3 +163,47 @@
     }
   }
 })();
+
+/* HOMEART Academy · лента фото: течёт сама (как «река» на Kitchen & Storage), под курсором медленнее;
+   листается трекпадом вбок, перетаскиванием мышью или пальцем — с инерцией. Вне экрана — стоит. */
+(function () {
+  const river = document.querySelector('.ac-river');
+  if (!river) return;
+  const t = river.querySelector('.ac-river__track');
+  t.insertAdjacentHTML('beforeend', t.innerHTML.replace(/ alt="[^"]*"/g, ' alt="" aria-hidden="true"'));   // вторая копия — поток без шва
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SPEED = 24;                      // px в секунду
+  let x = 0, v = 0, half = 1, hover = false, drag = null, seen = false, last = 0;
+  const measure = () => { half = t.scrollWidth / 2 + 6 };   // 6 — половина зазора между копиями
+  measure(); addEventListener('resize', measure);
+  function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000 || 0); last = now;
+    if (!drag) {
+      x -= (still ? 0 : SPEED * (hover ? .35 : 1)) * dt + v;
+      v *= .9; if (Math.abs(v) < .05) v = 0;
+    }
+    x = ((x % half) - half) % half;
+    t.style.transform = `translate3d(${x.toFixed(2)}px,0,0)`;
+    if (seen || drag || v) requestAnimationFrame(frame); else last = 0;
+  }
+  const run = () => { if (!last) { last = performance.now(); requestAnimationFrame(frame) } };
+  new IntersectionObserver(([e]) => { seen = e.isIntersecting; if (seen) { measure(); run() } }).observe(river);
+  river.addEventListener('mouseenter', () => hover = true);
+  river.addEventListener('mouseleave', () => hover = false);
+  river.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;     // вертикальную прокрутку страницы не перехватываем
+    e.preventDefault(); v += e.deltaX * .06; run();
+  }, { passive: false });
+  river.addEventListener('pointerdown', e => {
+    drag = { lx: e.clientX }; v = 0;
+    river.setPointerCapture(e.pointerId); river.classList.add('is-drag');
+  });
+  river.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.lx; drag.lx = e.clientX; x += dx; drag.v = dx;
+    t.style.transform = `translate3d(${x.toFixed(2)}px,0,0)`;
+  });
+  const end = () => { if (!drag) return; v = Math.max(-40, Math.min(40, -(drag.v || 0) * .9)); drag = null; river.classList.remove('is-drag'); run() };
+  river.addEventListener('pointerup', end); river.addEventListener('pointercancel', end);
+})();
+

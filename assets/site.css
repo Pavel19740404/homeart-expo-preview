@@ -78,10 +78,10 @@ p+p{margin-top:.9em}
 .logo img{display:block;height:15px;width:auto}   /* оригинальный логотип, без подписи */
 .foot .logo img{height:auto;width:min(240px,100%)}   /* в подвале — с подписью INTERIOR SHOWROOM & PROJECT PARTNER */
 .nav{display:flex;gap:24px;align-items:center;white-space:nowrap}
-.nav>a,.nav__dd>button{font-size:11.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;opacity:.78;
+.nav>a,.nav__dd>a{font-size:11.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;opacity:.78;
   padding:6px 0;border-bottom:1px solid transparent;transition:opacity .2s;display:flex;gap:6px;align-items:center}
-.nav>a:hover,.nav__dd>button:hover,.nav>a.on,.nav__dd.on>button{opacity:1}
-.nav>a.on,.nav__dd.on>button{border-bottom-color:var(--ink)}
+.nav>a:hover,.nav__dd>a:hover,.nav>a.on,.nav__dd.on>a{opacity:1}
+.nav>a.on,.nav__dd.on>a{border-bottom-color:var(--ink)}
 .nav__dd{position:relative}
 .nav__menu{position:absolute;top:calc(100% + 10px);left:-18px;background:var(--white);border:.5px solid var(--line);
   border-radius:var(--r-lg);box-shadow:0 12px 32px rgba(33,33,33,.1);padding:8px;min-width:260px;
@@ -144,13 +144,6 @@ p+p{margin-top:.9em}
 .hero__cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
 
 /* ── полоса широты ─────────────────────────────────────── */
-.breadth{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:.5px solid var(--line);border-bottom:.5px solid var(--line)}
-.breadth a{padding:26px 18px 24px;border-left:.5px solid var(--line);transition:background .25s}
-.breadth a:first-child{border-left:0}
-.breadth a:hover{background:var(--white)}
-.breadth .n{font-weight:300;font-size:clamp(26px,2.6vw,40px);line-height:1;letter-spacing:-.02em}
-.breadth .l{font-size:12.5px;color:var(--graphite);margin-top:10px;line-height:1.35}
-.breadth .go{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-top:12px;display:block}
 
 /* ── уровни доступа, замки ─────────────────────────────── */
 .need{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:500;letter-spacing:.14em;
@@ -427,9 +420,6 @@ a.fac:hover .card__img img{transform:none;filter:none}
 @media(max-width:1360px){.hdr__call span{display:none}}
 @media(max-width:1180px){
   .nav{gap:16px}
-  .breadth{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .breadth a:nth-child(5){border-left:0}
-  .breadth a:nth-child(n+5){border-top:.5px solid var(--line)}
   .foot__g{grid-template-columns:repeat(3,minmax(0,1fr))}
   .foot__g>div:first-child{grid-column:1/-1}
 }
@@ -459,10 +449,6 @@ a.fac:hover .card__img img{transform:none;filter:none}
   .mnav{top:64px}
   .hdr__me .lvl{display:none}
   .hdr__me .btn{padding:10px 14px}
-  .breadth{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .breadth a:nth-child(odd){border-left:0}
-  .breadth a:nth-child(n+3){border-top:.5px solid var(--line)}
-  .breadth a:nth-child(5){border-left:0}
   .perks,.grid2,.grid3,.grid4,.proc,.why,.row2{grid-template-columns:1fr}
   .gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ev{grid-template-columns:64px minmax(0,1fr)}
@@ -500,8 +486,8 @@ a.fac:hover .card__img img{transform:none;filter:none}
 h1,.h1,.display{font-family:var(--display);font-weight:500;text-transform:uppercase;letter-spacing:.01em;line-height:1.14}
 h2,.h2{font-family:var(--sans);font-weight:300;text-transform:uppercase;letter-spacing:.02em;line-height:1.18}
 h3,.h3{font-family:var(--display);font-weight:500;text-transform:uppercase;letter-spacing:.03em;font-size:16px;line-height:1.35}
-.eyebrow,.btn,.tabs a,.nav a,.nav__dd > button{font-family:var(--display)}
-.nav a,.nav__dd > button{text-transform:uppercase;letter-spacing:.06em;font-size:12.5px}
+.eyebrow,.btn,.tabs a,.nav a,.nav__dd > a{font-family:var(--display)}
+.nav a,.nav__dd > a{text-transform:uppercase;letter-spacing:.06em;font-size:12.5px}
 .lead{font-weight:300}
 .hero h1,.display{letter-spacing:.01em;line-height:1.1}   /* прописным не нужна отрицательная разрядка */
 @media (max-width:640px){h1,.h1,.hero h1{font-size:clamp(24px,7.2vw,30px)}h2,.h2{font-size:clamp(22px,6.4vw,28px)}}   /* прописные шире — длинные слова не вылезают */
@@ -524,12 +510,11 @@ body{background:var(--mist)}                                   /* светло-�
   -webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent)}
 #hdr:has(.hdr[data-tone=dark])::before,#hdr:has(.hdr.is-scrolled)::before{opacity:1}
 .hdr[data-tone=dark]{color:#fff}
-.nav>a.on,.nav__dd.on>button{border-bottom-color:currentColor}
+.nav>a.on,.nav__dd.on>a{border-bottom-color:currentColor}
 .nav__menu{color:var(--ink)}
-.hdr .btn{background:var(--ink);color:#fff;border-color:var(--ink)}
-.hdr .btn:hover{background:var(--slate);border-color:var(--slate)}
-.hdr[data-tone=dark] .btn{background:#fff;color:var(--ink);border-color:#fff}
-.hdr[data-tone=dark] .btn:hover{background:var(--sand);border-color:var(--sand)}
+.hdr .btn{background:transparent;color:inherit;border-color:currentColor}   /* прозрачная, в цвет шапки; заливка — только при наведении */
+.hdr .btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.hdr[data-tone=dark] .btn:hover{background:#fff;color:var(--ink);border-color:#fff}
 .hdr__call:hover{color:var(--graphite)}
 .hdr[data-tone=dark] .hdr__call:hover{color:var(--sand)}
 .burger span{background:currentColor;box-shadow:0 -6px 0 currentColor,0 6px 0 currentColor}
@@ -540,8 +525,30 @@ body{background:var(--mist)}                                   /* светло-�
 .hero[data-hdr-over] .hero__in{padding-top:calc(var(--hh) + 24px)}
 @media(max-width:640px){:root{--hh:64px}}
 .sec--mist{background:var(--white)}                            /* фон и так светло-серый — чередуем с белым */
-.breadth{background:var(--ink-soft);color:#fff;border:0;border-radius:var(--r-lg);overflow:hidden}
-.breadth a{border-left-color:rgba(255,255,255,.1)}
-.breadth a:hover{background:#3a3a3a}
-.breadth .l{color:#bdbdbd}
-.breadth .go{color:var(--sand)}
+
+/* ── заявка: способ связи и файлы ── */
+.fld__l{display:block;font-size:12px;color:var(--graphite);margin-bottom:6px}
+.cb-way{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;border:.5px solid var(--line);border-radius:999px;background:var(--white)}
+.cb-way label{position:relative;display:block}
+.cb-way input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.cb-way span{display:block;text-align:center;padding:8px 6px;border-radius:999px;font-size:13px;cursor:pointer;color:var(--graphite);transition:background .25s var(--ease),color .25s var(--ease)}
+.cb-way span:hover{color:var(--ink)}
+.cb-way input:checked+span{background:var(--ink);color:var(--white)}
+.cb-way input:focus-visible+span{outline:2px solid var(--brass);outline-offset:2px}
+.fld[hidden]{display:none}
+.cb-drop{position:relative;display:flex;gap:12px;align-items:center;padding:14px 16px;border:.5px dashed var(--brass-deep);border-radius:var(--r);background:var(--white);cursor:pointer;color:var(--graphite);transition:border-color .2s,background .2s}
+.cb-drop:hover,.cb-drop.on{border-color:var(--ink);background:var(--mist)}
+.cb-drop input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.cb-drop:focus-within{outline:2px solid var(--brass);outline-offset:2px}
+.cb-drop svg{flex:none;color:var(--ink)}
+.cb-drop span{min-width:0;font-size:13.5px;line-height:1.4}
+.cb-drop b{font-weight:500;color:var(--ink)}
+.cb-drop small{display:block;font-size:12px;color:var(--graphite-2);margin-top:3px}
+#cbForm{grid-template-columns:minmax(0,1fr)}
+.cb-files{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+.cb-files:empty{display:none}
+.cb-files li{display:flex;align-items:center;gap:10px;padding:7px 8px 7px 12px;border-radius:var(--r);background:var(--mist);font-size:13px}
+.cb-files li span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cb-files li em{font-style:normal;color:var(--graphite-2);font-size:12px;flex:none}
+.cb-files li button{flex:none;width:26px;height:26px;border-radius:50%;font-size:17px;line-height:1;color:var(--graphite)}
+.cb-files li button:hover{background:var(--white);color:var(--ink)}

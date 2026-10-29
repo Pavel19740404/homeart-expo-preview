@@ -56,10 +56,11 @@
   /* ── шапка ── */
   const NAV = [
     { k: 'catalog', t: 'Каталог', dd: [
-      ['catalog.html', 'Наличие', 'Мебель и свет в Москве и Петербурге'],
-      ['factories.html', 'Каталог фабрик', '348 фабрик, фильтры и подборки'],
-      ['kitchen.html', 'Kitchen Division', 'Кухни · гардеробные · двери · техника'],
-      ['factories.html?tab=decor', 'Аксессуары и декор', 'Ковры, предметы, свет-акценты'],
+      ['catalog.html', 'Каталог предметов', 'Мебель, свет и декор — с фильтрами и поиском'],
+      ['catalog.html?stock=1', 'В наличии', 'Москва и Санкт-Петербург, без ожидания поставки'],
+      ['factories.html', 'Каталог фабрик', '348 фабрик: мебель, свет, кухни, декор'],
+      ['kitchen.html', 'Kitchen &amp; Storage', 'Кухни · гардеробные · двери · техника'],
+      ['factories.html?tab=decor', 'Аксессуары и декор', 'Фабрики ковров, предметов и свет-акцентов'],
       ['#art', 'Искусство ↗', 'Арт-сайт HOMEART × ADH'],
     ] },
     { k: 'projects', t: 'Проекты', href: 'projects.html' },
@@ -73,26 +74,26 @@
   function renderHeader() {
     const el = document.getElementById('hdr'); if (!el) return;
     const nav = NAV.map(n => n.dd
-      ? `<div class="nav__dd ${PAGE === n.k ? 'on' : ''}"><button type="button" aria-haspopup="true">${n.t}
-           <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 3.5l3 3 3-3"/></svg></button>
+      ? `<div class="nav__dd ${PAGE === n.k ? 'on' : ''}"><a href="${ROOT}catalog.html" aria-haspopup="true">${n.t}
+           <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 3.5l3 3 3-3"/></svg></a>
            <div class="nav__menu">${n.dd.map(([h, t, s]) => `<a href="${h[0] === '#' ? h : ROOT + h}">${t}<small>${s}</small></a>`).join('')}</div></div>`
       : `<a href="${ROOT + n.href}" class="${PAGE === n.k ? 'on' : ''}">${n.t}</a>`).join('');
-    const me = `<a href="${BOT}" class="btn btn--sm" target="_blank" rel="noopener">Стать участником</a>`;
+    const me = `<button type="button" class="btn btn--sm" data-call="Шапка: оставить заявку">Оставить заявку</button>`;
     const OVER = !!document.querySelector('[data-hdr-over]');
     el.innerHTML = `<header class="hdr" data-tone="${OVER ? 'dark' : 'light'}"><div class="wrap hdr__in">
         <a href="${ROOT}index.html" class="logo" aria-label="HOMEART, на главную"><img src="${ROOT}assets/logo/homeart-mark-${OVER ? 'white' : 'black'}.png" alt="HOMEART" width="917" height="135"></a>
         <nav class="nav" aria-label="Основная навигация">${nav}</nav>
         <div class="hdr__act">
-          <button type="button" class="hdr__call" data-call="Шапка сайта">
+          <a class="hdr__call" href="${TEL}" aria-label="Позвонить: ${PHONE}">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2"/></svg>
-            <span>Заказать звонок</span></button>
+            <span>${PHONE}</span></a>
           <div class="hdr__me">${me}</div>
           <button type="button" class="burger" aria-label="Меню" onclick="document.getElementById('mnav').classList.toggle('on')"><span></span></button>
         </div></div></header>
       <nav class="mnav" id="mnav" aria-label="Меню">
         ${NAV.map(n => n.dd ? `<a href="${ROOT}catalog.html">${n.t}</a>` + n.dd.map(([h, t]) => `<a class="sub" href="${h[0] === '#' ? h : ROOT + h}">${t}</a>`).join('') : `<a href="${ROOT + n.href}">${n.t}</a>`).join('')}
         <a href="${ROOT}contacts.html">Контакты</a>
-        <a href="#" data-call="Мобильное меню">Заказать звонок</a>
+        <a href="#" data-call="Мобильное меню">Оставить заявку</a>
         <a href="${BOT}" target="_blank" rel="noopener">Стать участником HOMEART Academy</a>
       </nav>`;
   }
@@ -136,8 +137,8 @@
       <div class="foot__g">
         <div><a href="${ROOT}index.html" class="logo" aria-label="HOMEART, на главную"><img src="${ROOT}assets/logo/homeart-full-white.png" alt="HOMEART — Interior Showroom &amp; Project Partner" width="949" height="205"></a>
           <p class="foot__slogan">Больше чем шоурум. Комплектация интерьера для дизайнеров и архитекторов с 2009 года.</p></div>
-        <div><h4>Каталог</h4><a href="${ROOT}catalog.html">Наличие</a><a href="${ROOT}factories.html">Фабрики</a>
-          <a href="${ROOT}kitchen.html">Kitchen Division</a><a href="${ROOT}factories.html?tab=decor">Аксессуары и декор</a><a href="#art">Искусство ↗</a></div>
+        <div><h4>Каталог</h4><a href="${ROOT}catalog.html">Каталог предметов</a><a href="${ROOT}catalog.html?stock=1">В наличии</a><a href="${ROOT}factories.html">Каталог фабрик</a>
+          <a href="${ROOT}kitchen.html">Kitchen &amp; Storage</a><a href="${ROOT}factories.html?tab=decor">Аксессуары и декор</a><a href="#art">Искусство ↗</a></div>
         <div><h4>Дизайнерам</h4><a href="${ROOT}services.html">Как мы работаем</a><a href="${ROOT}projects.html">Проекты</a>
           <a href="${ROOT}events.html">Мероприятия</a><a href="${BOT}" target="_blank" rel="noopener">Стать участником</a></div>
         <div><h4>Каналы</h4><a href="#tg">Telegram-канал</a><a href="#ig">Instagram</a><a href="${BOT}" target="_blank" rel="noopener">HOMEART Academy</a></div>
@@ -186,31 +187,86 @@
   }
   function closeModal() { const m = document.getElementById('modal'); if (m) m.classList.remove('on'); document.body.style.overflow = '' }
 
-  /* заявка на звонок — без регистрации (ТЗ §4.10) */
+  /* заявка менеджеру — без регистрации (ТЗ §4.10): любой удобный способ связи, можно приложить файлы */
+  const WAYS = {
+    phone: { t: 'Телефон', label: 'Телефон', type: 'tel', im: 'tel', ac: 'tel', ph: '+7 ___ ___-__-__', err: 'Нужен номер из 10–11 цифр',
+      ok: v => { const d = v.replace(/\D/g, ''); return d.length >= 10 && d.length <= 11 }, done: `Позвоним в рабочее время, с номера ${PHONE}.` },
+    tg: { t: 'Telegram', label: 'Ник или телефон в Telegram', type: 'text', im: 'text', ac: 'off', ph: '@username', err: 'Укажите ник или номер',
+      ok: v => /^@?[a-z0-9_]{4,32}$/i.test(v.trim()) || v.replace(/\D/g, '').length >= 10, done: 'Напишем вам в Telegram в рабочее время.' },
+    mail: { t: 'Email', label: 'Электронная почта', type: 'email', im: 'email', ac: 'email', ph: 'name@studio.ru', err: 'Проверьте адрес почты',
+      ok: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()), done: 'Ответим письмом в рабочее время.' },
+  };
+  const FILES_MAX = 5, FILES_MB = 20;
+  const mb = n => (n / 1048576 < .1 ? '<0,1' : (n / 1048576).toFixed(1).replace('.', ',')) + ' МБ';
   function callback(ctx) {
-    const page = document.title.replace(' — HOMEART', '');
+    const page = document.title.replace(' — HOMEART', '').replace(' · HOMEART', '');
     const context = ctx && ctx !== page ? `${page} · ${ctx}` : page;
-    modal(`<div class="eyebrow">Заявка</div><h2>Заказать звонок</h2>
-      <p class="muted small">Перезвоним в рабочее время и ответим на вопросы по проекту, позиции или фабрике.</p>
+    modal(`<div class="eyebrow">Заявка</div><h2>Оставить заявку</h2>
+      <p class="muted small">Ответим на вопросы по проекту, позиции или фабрике. Свяжемся так, как вам удобно.</p>
       <form class="form" id="cbForm" novalidate style="margin-top:14px">
         <input type="hidden" name="context" value="${esc(context)}">
         <div class="fld"><label for="cbName">Имя <i>*</i></label><input id="cbName" name="name" autocomplete="name"><div class="err">Укажите имя</div></div>
-        <div class="fld"><label for="cbPhone">Телефон <i>*</i></label><input id="cbPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"><div class="err">Нужен номер из 10–11 цифр</div></div>
-        <div class="fld"><label for="cbTime">Удобное время</label><select id="cbTime" name="time"><option>Любое</option><option>10:00–13:00</option><option>13:00–16:00</option><option>16:00–19:00</option></select></div>
-        <div class="fld"><label for="cbCom">Ваш вопрос или комментарий</label><textarea id="cbCom" name="comment" rows="5" placeholder="Оставьте здесь ваш вопрос либо комментарий"></textarea></div>
+        <div class="fld"><span class="fld__l" id="cbWayL">Как с вами связаться</span>
+          <div class="cb-way" role="radiogroup" aria-labelledby="cbWayL">${Object.entries(WAYS).map(([k, w], i) =>
+            `<label><input type="radio" name="way" value="${k}"${i ? '' : ' checked'}><span>${w.t}</span></label>`).join('')}</div></div>
+        <div class="fld"><label for="cbContact" id="cbContactL"></label><input id="cbContact" name="contact"><div class="err" id="cbContactE"></div></div>
+        <div class="fld" id="cbTimeF"><label for="cbTime">Удобное время</label><select id="cbTime" name="time"><option>Любое</option><option>10:00–13:00</option><option>13:00–16:00</option><option>16:00–19:00</option></select></div>
+        <div class="fld"><label for="cbCom">Ваш вопрос или комментарий</label><textarea id="cbCom" name="comment" rows="4" placeholder="Например: подобрать диван в гостиную, нужен просчёт по спецификации"></textarea></div>
+        <div class="fld"><span class="fld__l">Файлы</span>
+          <label class="cb-drop" id="cbDrop"><input type="file" id="cbFiles" multiple>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.5l-8.6 8.6a5.5 5.5 0 01-7.8-7.8l9.2-9.2a3.7 3.7 0 015.2 5.2l-9.2 9.2a1.8 1.8 0 01-2.6-2.6l8.5-8.5"/></svg>
+            <span><b>Прикрепить файлы</b> или перетащите сюда<small>Спецификация, планировка, фото — до ${FILES_MAX} файлов, до ${FILES_MB} МБ вместе</small></span></label>
+          <ul class="cb-files" id="cbList"></ul><div class="err" id="cbFilesE"></div></div>
         <label class="chk" id="cbAgreeL"><input type="checkbox" id="cbAgree"> Согласен на обработку персональных данных (152-ФЗ)</label>
         <button class="btn btn--block" type="submit">Отправить заявку</button>
         <p class="small muted">Нажимая кнопку, вы соглашаетесь с <a href="${ROOT}privacy.html" target="_blank" style="border-bottom:1px solid">политикой конфиденциальности</a>.</p>
       </form>`);
-    document.getElementById('cbForm').addEventListener('submit', e => {
+    const form = document.getElementById('cbForm'), inp = document.getElementById('cbContact');
+    const way = () => form.way.value;
+    function setWay() {
+      const w = WAYS[way()];
+      document.getElementById('cbContactL').innerHTML = `${w.label} <i>*</i>`;
+      document.getElementById('cbContactE').textContent = w.err;
+      Object.assign(inp, { type: w.type, inputMode: w.im, autocomplete: w.ac, placeholder: w.ph });
+      inp.closest('.fld').classList.remove('bad');
+      document.getElementById('cbTimeF').hidden = way() !== 'phone';
+    }
+    form.addEventListener('change', e => { if (e.target.name === 'way') { setWay(); inp.focus() } });
+    setWay();
+
+    // файлы: выбор и перетаскивание, список с удалением, лимиты по числу и объёму
+    let files = [];
+    const drop = document.getElementById('cbDrop'), pick = document.getElementById('cbFiles'), fe = document.getElementById('cbFilesE');
+    function drawFiles(msg) {
+      document.getElementById('cbList').innerHTML = files.map((f, i) =>
+        `<li><span>${esc(f.name)}</span><em>${mb(f.size)}</em><button type="button" data-rm="${i}" aria-label="Убрать файл ${esc(f.name)}">×</button></li>`).join('');
+      fe.textContent = msg || ''; fe.closest('.fld').classList.toggle('bad', !!msg);
+    }
+    function addFiles(list) {
+      let msg = '';
+      for (const f of list) {
+        if (files.length >= FILES_MAX) { msg = `Не больше ${FILES_MAX} файлов`; break }
+        if (files.reduce((n, x) => n + x.size, 0) + f.size > FILES_MB * 1048576) { msg = `Вместе не больше ${FILES_MB} МБ`; continue }
+        if (!files.some(x => x.name === f.name && x.size === f.size)) files.push(f);
+      }
+      drawFiles(msg);
+    }
+    pick.addEventListener('change', () => { addFiles(pick.files); pick.value = '' });
+    document.getElementById('cbList').addEventListener('click', e => { const b = e.target.closest('[data-rm]'); if (b) { files.splice(+b.dataset.rm, 1); drawFiles() } });
+    ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('on') }));
+    ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('on') }));
+    drop.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      const ok = [validate('cbName', v => v.trim().length > 1), validate('cbPhone', v => { const d = v.replace(/\D/g, ''); return d.length >= 10 && d.length <= 11 })].every(Boolean);
+      const w = WAYS[way()];
+      const ok = [validate('cbName', v => v.trim().length > 1), validate('cbContact', w.ok)].every(Boolean);
       const ag = document.getElementById('cbAgree').checked;
       document.getElementById('cbAgreeL').classList.toggle('bad', !ag);
       if (!ok || !ag) return;
-      // TODO запуск: отправка в сервис форм → AmoCRM (сделка, источник «сайт», контекст заявки)
-      document.getElementById('modalBody').innerHTML = `<div class="done"><div class="done__i">✓</div><h2>Спасибо, перезвоним</h2>
-        <p>Обычно в течение рабочего дня. Звонок будет с номера ${PHONE}.</p>
+      // TODO запуск: отправка на почту менеджеров / в сервис форм → AmoCRM — FormData(form) + files, контекст заявки и способ связи
+      document.getElementById('modalBody').innerHTML = `<div class="done"><div class="done__i">✓</div><h2>Спасибо, заявка отправлена</h2>
+        <p>${w.done}</p>
         <button type="button" class="btn btn--line" data-close style="margin-top:18px">Закрыть</button></div>`;
     });
   }

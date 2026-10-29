@@ -7,28 +7,33 @@
 }
 
 /* ── сцена ─────────────────────────────────────────────── */
-/* режим «ролик»: обычный первый экран; режим «сборка» (.hx--scrub): секция вытягивается, сцена прилипает */
+/* первый экран: ролик во весь экран сцены */
 .hx{position:relative;background:#e7e6e6}
 .hx{--hdr:0px}   /* сцена заходит под шапку (data-hdr-over), шапка лежит на ролике дымкой */
 .hx__stage{position:relative;top:var(--hdr);height:calc(100vh - var(--hdr));height:calc(100svh - var(--hdr));overflow:hidden;isolation:isolate;background:#e7e6e6}
-.hx:not(.hx--scrub) .hx__stage{top:0}
-.hx--scrub{height:480vh}
-.hx--scrub .hx__stage{position:sticky}
 /* окно ролика: на компьютере — весь экран сцены */
 .hx__view{position:absolute;inset:0}
-.hx__poster,.hx__vid,.hx__cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hx__poster,.hx__vid{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hx__poster,.hx__vid{object-fit:cover}
 .hx__poster{z-index:1;transition:opacity .4s ease}
 .hx--live .hx__poster{opacity:0;pointer-events:none}   /* видео пошло — заставку убираем */
-.hx__cv{display:none;z-index:2}
-.hx--scrub.hx--cv .hx__cv{display:block}
 /* затемнение снизу — под титрами текст читается на любом кадре */
 .hx__scrim{position:absolute;inset:auto 0 0 0;height:46%;pointer-events:none;z-index:1;
   background:linear-gradient(0deg,rgba(33,33,33,.66) 0%,rgba(33,33,33,.3) 45%,rgba(33,33,33,0) 100%)}
 
+/* кнопка ролика: тихая надпись в левом нижнем углу, без подложки; видна только когда ролик не идёт */
+.hxbtn{position:absolute;z-index:6;left:clamp(16px,3vw,48px);bottom:clamp(20px,4vh,40px);display:inline-flex;align-items:center;gap:8px;padding:6px 0;
+  color:#fff;font-family:var(--display);font-weight:500;font-size:10px;letter-spacing:.22em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.35);
+  opacity:0;pointer-events:none;transition:opacity .5s cubic-bezier(.23,1,.32,1)}
+.hxbtn.on{opacity:.6;pointer-events:auto}
+.hxbtn.on:hover,.hxbtn.on:focus-visible{opacity:1}
+.hxbtn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .6s cubic-bezier(.23,1,.32,1)}
+.hxbtn:hover svg{transform:rotate(-200deg)}
+
 /* подписи — как титры в кино: по центру внизу, тонкий крупный шрифт, без плашек */
 .cap{position:absolute;left:0;right:0;bottom:clamp(24px,7vh,64px);z-index:5;padding:0 8%;text-align:center}
-.cap__stack{position:relative;max-width:1100px;margin:0 auto}
+.cap__stack{position:relative;max-width:1320px;margin:0 auto}
+.cap .nw{white-space:nowrap}   /* фраза переносится только между смысловыми частями */
 .cap__b{position:absolute;left:0;right:0;bottom:0;opacity:0;filter:blur(8px);transform:translateY(12px);
   transition:opacity .7s var(--hx-out),filter .7s var(--hx-out),transform .9s var(--hx-out);pointer-events:none}
 .cap__b.on{position:relative;opacity:1;filter:none;transform:none;pointer-events:auto}
@@ -40,37 +45,15 @@
 .cap__soon i{width:18px;height:18px;border-radius:50%;background:#2aabee;color:#fff;font-style:normal;display:flex;align-items:center;justify-content:center;font-size:10px}
 
 /* этапы вверху сцены — тихо: мелкий шрифт, тонкие линии; ярче при наведении */
-.hxst{position:absolute;z-index:5;left:clamp(16px,3vw,48px);right:clamp(16px,3vw,48px);top:calc(var(--hh) + clamp(14px,3vh,30px));display:flex;align-items:center;gap:16px}
-.hxst__segs{flex:1;min-width:0;display:flex;gap:6px;opacity:.72;transition:opacity .3s ease}
-.hxst:hover .hxst__segs,.hx--scrub .hxst__segs{opacity:1}
-.seg{flex:var(--w,1) 1 0;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding:4px 0;text-align:left;cursor:pointer}
-.seg:nth-child(1){--w:17}.seg:nth-child(2){--w:19}.seg:nth-child(3){--w:44}.seg:nth-child(4){--w:20}
-.seg span{font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;transition:color .25s ease}
-.seg.on span,.seg:hover span{color:var(--ink)}
-.seg i{position:relative;display:block;width:100%;height:1px;background:rgba(33,33,33,.15);overflow:hidden}
-.seg i::after{content:"";position:absolute;inset:0;background:rgba(33,33,33,.75);transform-origin:0 50%;transform:scaleX(var(--f,0))}
-.hxst__hint{position:absolute;right:0;top:100%;margin-top:6px;font-size:11px;color:var(--graphite)}
 
 /* кнопка: кольцо = ход ролика, внутри пауза или play.
    При открытии мягко вспыхивает и тускнеет; после конца ролика несколько раз «дышит» — приглашает посмотреть снова */
-.hxst__play{position:relative;flex:none;width:32px;height:32px;display:grid;place-items:center;opacity:.55;
-  transition:opacity .3s ease,transform .16s ease-out;animation:hxGlow 1.8s var(--hx-ease) .5s 1}
-.hxst__play:hover,.hxst__play:focus-visible{opacity:1}
-.hxst__play:active{transform:scale(.92)}
-.hxst__play svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-.hxst__play .r0{fill:rgba(255,255,255,.4);stroke:rgba(33,33,33,.2);stroke-width:1.2}
-.hxst__play .r1{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p,0))}
-.hxst__play i{position:relative;width:0;height:0;border-style:solid;border-width:4px 0 4px 7px;border-color:transparent transparent transparent var(--ink);margin-left:2px}
-.hxst__play.is-playing i{width:7px;height:9px;border:0;margin:0;border-left:2px solid var(--ink);border-right:2px solid var(--ink)}
-.hxst__play.is-ended{animation:hxBreathe 2.6s ease-in-out .4s 3}
-@keyframes hxGlow{0%{opacity:.55;transform:scale(1)}35%{opacity:1;transform:scale(1.1)}100%{opacity:.55;transform:scale(1)}}
-@keyframes hxBreathe{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.07)}}
 .hx__list{display:none}
 
 /* статичный режим: «меньше движения» — финальный кадр без закрепления и прокрутки */
 .hx--static{height:auto}
 .hx--static .hx__stage{position:relative}
-.hx--static .hx__cv,.hx--static .hx__vid,.hx--static .hxst,.hx--static .hxst__hint{display:none}
+.hx--static .hx__vid,.hx--static .hxbtn{display:none}
 .hx--static .hx__list{display:block;position:relative;z-index:5;max-width:var(--maxw);margin:0 auto;padding:28px var(--gutter) 40px}
 .hx--static .hx__list ol{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;border-top:.5px solid var(--line);padding-top:20px}
 .hx--static .hx__list b{display:block;font-weight:500;margin-bottom:4px}
@@ -78,22 +61,17 @@
 
 /* телефон: ролик — окно 4:3 сверху, подпись — под ним на светлом фоне */
 @media (max-width:860px){
-  .hx--scrub{height:400vh}
   .hx__view{inset:0 0 auto 0;aspect-ratio:4/3}
   .hx__scrim{display:none}
   .cap{left:16px;right:16px;width:auto;top:calc(75vw + 18px);bottom:auto;padding:0}   /* сразу под окном ролика */
   .cap__b{top:0;bottom:auto}
+  .hxbtn{top:calc(75vw - 40px);bottom:auto;left:14px}
   .cap .eyebrow{color:var(--amber)}
   .cap h1,.cap h2{font-size:clamp(25px,7vw,32px);font-weight:300;margin:8px 0 0;color:var(--ink)}
   .cap p,.cap__soon{font-size:13.5px;color:var(--graphite)}
   .cap .btn--light{background:var(--ink);color:#fff;border-color:var(--ink)}
   .cap .btn--ghost-light{color:var(--ink);border-color:var(--ink)}
-  .hx:not(.hx--scrub) .hx__stage{height:calc(75vw + 330px)}   /* ролик + подпись, без пустоты снизу */
-  .hxst{top:calc(var(--hh) + 10px);left:12px;right:12px;gap:10px}
-  .hxst__segs{gap:4px}
-  .seg{flex:1 1 0}
-  .seg span{font-size:8.5px;letter-spacing:.08em}
-  .hxst__hint{display:none}
+  .hx__stage{height:calc(75vw + 330px)}   /* ролик + подпись, без пустоты снизу */
   .hx--static .hx__stage{height:auto;min-height:0;padding-bottom:0}
   .hx--static .hx__view{position:relative;top:0}
   .hx--static .cap{position:relative;inset:auto;margin:20px 16px 0}
@@ -151,7 +129,6 @@
   .trust__foot{position:static;opacity:1;margin:28px var(--gutter) 0}
   .trust .face,.trust .trust__foot{pointer-events:auto}
   .cap__b{transition:none}
-  .hxst__play,.hxst__play.is-ended{animation:none}
 }
 
 /* служебная плашка прототипа на главной не закрывает подпись справа */
@@ -171,3 +148,50 @@ body[data-page="home"] .proto{right:auto;left:12px}
   .cap .btn--light{background:#fff;color:var(--ink);border-color:#fff}
   .cap .btn--ghost-light{color:#fff;border-color:rgba(255,255,255,.6)}
 }
+
+/* ── «Знакомьтесь с HOMEART»: графитовая панель, цифры команды и поле из 348 точек ── */
+.tm{padding:clamp(56px,7vw,112px) 0}
+.tm__in{background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:clamp(28px,4.4vw,72px);display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(28px,4vw,72px)}
+.tm .eyebrow{color:var(--sand)}
+.tm h2{color:#fff;font-family:var(--display);font-weight:500;text-transform:uppercase;font-size:clamp(28px,3vw,46px);line-height:1.1;letter-spacing:.01em;margin:16px 0 14px;max-width:16ch}
+.tm__sub{color:#d6d6d6;font-weight:300;font-size:clamp(16px,1.3vw,19px);line-height:1.5;max-width:40ch}
+.tm__nums{display:grid;grid-template-columns:1fr 1fr;gap:28px 32px;margin-top:clamp(28px,3.4vw,48px)}
+.tm b{display:block;font-weight:200;line-height:.95;color:#fff;font-variant-numeric:tabular-nums}
+.tm__nums b{font-size:clamp(44px,4.4vw,68px)}
+.tm__nums span{display:block;margin-top:10px;font-size:13.5px;line-height:1.5;color:#a9a9a9;max-width:26ch}
+.tm__fab{display:flex;flex-direction:column;justify-content:space-between;gap:24px}
+.tm__stage{position:relative}
+.tm__dots{display:grid;grid-template-columns:repeat(20,1fr);gap:clamp(4px,.55vw,8px)}
+.tm__dots i{aspect-ratio:1;border-radius:50%;background:var(--sand);opacity:0;transform:scale(.6);transition:opacity .5s ease,transform .5s cubic-bezier(.23,1,.32,1)}
+.tm__dots.dim i{opacity:.08;transform:none}
+.tm__dots.go i{opacity:.5;transform:none}
+.tm__dots i.hit{opacity:1;background:#fff;transform:scale(1.25);transition-delay:0s!important}
+/* логотипы ключевых фабрик поверх поля: сначала крупно, потом каждый сжимается в свою точку */
+.tm__logos{position:absolute;inset:0;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;row-gap:clamp(18px,2.4vw,34px);pointer-events:none}   /* по 4 в ряд, неполный последний ряд — по центру */
+.tm__logos span{width:25%;display:flex;align-items:center;justify-content:center;height:clamp(26px,2.6vw,40px)}
+.tm__logos img{max-width:84%;max-height:100%;object-fit:contain;opacity:0}   /* появление и исчезновение — анимациями из скрипта */
+/* «и ещё N фабрики →» — под сеткой логотипов, пока они на экране */
+.tm__more{flex-basis:100%;text-align:center;margin-top:clamp(4px,1vw,12px);font-family:var(--display);font-weight:500;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--sand);
+  opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .5s cubic-bezier(.23,1,.32,1),color .2s;pointer-events:none}
+.tm__more span{display:inline-block;transition:transform .25s cubic-bezier(.23,1,.32,1)}
+.tm__stage.more .tm__more{opacity:1;transform:none;pointer-events:auto}
+.tm__more:hover{color:#fff}.tm__more:hover span{transform:translateX(4px)}
+.tm__fab b{font-size:clamp(56px,5.6vw,88px);line-height:.9}
+.tm__fab p{color:#d6d6d6;font-weight:300;font-size:15.5px;line-height:1.55;margin:10px 0 22px;max-width:40ch}
+@media (max-width:980px){.tm__in{grid-template-columns:1fr}}
+@media (max-width:640px){.tm__nums{gap:22px 18px}}
+@media (prefers-reduced-motion:reduce){.tm__dots i{transition:none}.tm__logos{display:none}}
+
+/* ── HOMEART Academy: лента фото со встреч — как «река» на Kitchen & Storage, кадры одного формата 4:5 ── */
+.ac-river{position:relative;min-width:0;margin-right:calc(-1 * var(--gutter));overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 90%,transparent)}
+.ac-river.is-drag{cursor:grabbing}
+.ac-river__track{display:flex;gap:12px;width:max-content;will-change:transform}
+.ac-river img{flex:none;height:clamp(280px,25vw,380px);width:auto;aspect-ratio:4/5;object-fit:cover;border-radius:var(--r-lg);background:var(--linen);pointer-events:none;-webkit-user-drag:none}
+@media (max-width:640px){
+  .ac-river{margin-left:calc(-1 * var(--gutter));-webkit-mask-image:none;mask-image:none}
+  .ac-river img{height:min(84vw,380px)}
+}
+
+/* заголовок в одну строку (на телефоне — переносится, если не влезает) */
+@media (min-width:641px){.nw1{white-space:nowrap}}

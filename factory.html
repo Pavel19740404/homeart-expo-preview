@@ -7,16 +7,16 @@
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap">
-<link rel="stylesheet" href="assets/fonts.css?v=1793016635">
-<link rel="stylesheet" href="assets/site.css?v=1793016635">
+<link rel="stylesheet" href="assets/fonts.css?v=1793205172">
+<link rel="stylesheet" href="assets/site.css?v=1793205172">
 </head>
 <body data-page="catalog" data-root="">
 <div id="hdr"></div>
 <main class="wrap" id="main"></main>
 <div id="ftr"></div>
-<script src="data/stock.js?v=1793016635"></script>
-<script src="data/data.js?v=1793016635"></script>
-<script src="assets/site.js?v=1793016635"></script>
+<script src="data/stock.js?v=1793205172"></script>
+<script src="data/data.js?v=1793205172"></script>
+<script src="assets/site.js?v=1793205172"></script>
 <script>
 (function () {
   const { esc, tier, qs } = HA;
@@ -52,7 +52,7 @@
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <button type="button" class="btn" data-need="member" data-act="3d" data-what="${esc(what)}">Запросить 3D-модель</button>
-        <button type="button" class="btn btn--line" data-call="${esc(what)}">Заказать звонок</button>
+        <button type="button" class="btn btn--line" data-call="${esc(what)}">Оставить заявку</button>
       </div>
     </section>
 
@@ -77,7 +77,7 @@
             <button type="button" class="btn btn--sm" data-need="member" data-act="3d" data-what="${esc(what)}">Запросить 3D</button>
             <button type="button" class="btn btn--sm btn--line" data-need="member" data-act="tech" data-what="${esc(what)}">Запросить техничку</button></div></div>
       </div>
-      ${f.kdNotes ? `<p class="small muted" style="margin-top:14px">Kitchen Division: ${f.kdNotes.map(n => esc(n.section) + ' — ' + esc(n.note)).join(' · ')}</p>` : ''}
+      ${f.kdNotes ? `<p class="small muted" style="margin-top:14px">Kitchen &amp; Storage: ${f.kdNotes.map(n => esc(n.section) + ' — ' + esc(n.note)).join(' · ')}</p>` : ''}
     </section>
 
     <section class="sec--tight sec--line">
